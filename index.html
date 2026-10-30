@@ -7,8 +7,8 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Playfair para encabezados legales, Courier Prime para el texto de máquina de escribir -->
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@600;700;900&display=swap" rel="stylesheet">
+    <!-- Agregamos Dancing Script para tu firma a mano -->
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@600;700;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -162,6 +162,62 @@
             text-indent: 40px;
         }
 
+        /* --- NUEVO: ESTILOS PARA LA FIRMA --- */
+        .signature-block {
+            text-align: right;
+            margin-top: 40px;
+            margin-right: 20px;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        .signature-name {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.8rem;
+            color: #1a1a1a;
+            margin-bottom: -10px; /* Acercar la línea */
+        }
+
+        .signature-line {
+            display: inline-block;
+            border-top: 1px solid var(--ink-color);
+            padding-top: 5px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        /* --- NUEVO: ESTILOS PARA EL BOTÓN DEL JUEZ --- */
+        .verdict-btn {
+            display: block;
+            margin: 40px auto 20px;
+            background-color: var(--ink-color);
+            color: var(--paper-bg);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 15px 40px;
+            border: 2px solid var(--ink-color);
+            border-radius: 5px;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            pointer-events: none; /* No clickeable hasta que aparezca */
+        }
+
+        .verdict-btn.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .verdict-btn:hover {
+            background-color: var(--stamp-red);
+            border-color: var(--stamp-red);
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(201, 42, 42, 0.3);
+        }
+
         /* El cursor de la máquina de escribir */
         .cursor {
             display: inline-block;
@@ -228,11 +284,13 @@
             .folder-btn { font-size: 1.3rem; padding: 25px 30px; }
             .stamp {
                 right: 30px;
-                bottom: 40px;
+                bottom: 80px; /* Ajustado para no tapar el final */
                 font-size: 1.8rem;
                 padding: 5px 15px;
                 border-width: 4px;
             }
+            .signature-name { font-size: 2.2rem; }
+            .verdict-btn { font-size: 1.1rem; padding: 12px 25px; }
         }
     </style>
 </head>
@@ -272,7 +330,7 @@
             </div>
             <div class="meta-row">
                 <div class="meta-label">Dirigido a:</div>
-                <div>Celeste (alias: My Sky Blue 🩵)</div>
+                <div>Celeste Angélica Cal Chén (alias: My Sky Blue 🩵)</div>
             </div>
         </div>
 
@@ -280,10 +338,19 @@
             <!-- El texto se inyectará aquí con JS -->
         </div>
 
+        <!-- Firma que aparecerá después del texto -->
+        <div class="signature-block" id="signature">
+            <div class="signature-name">Cristian Herrera</div>
+            <div class="signature-line">Firma del Demandante</div>
+        </div>
+
+        <!-- Botón para que ELLA dicte el fallo -->
+        <button id="verdict-btn" class="verdict-btn">Dictar Fallo a Favor</button>
+
         <!-- Sello que aparecerá al final -->
         <div class="stamp" id="official-stamp">
             CASO GANADO
-            <div class="stamp-date">A FAVOR DE CRISTIAN</div>
+            <div class="stamp-date">A FAVOR DE CRISTIAN HERRERA</div>
         </div>
 
     </div>
@@ -298,8 +365,12 @@
             "Solicito formalmente una audiencia en el tribunal de tu corazón; presentaré en cada etapa del proceso las evidencias irrefutables de por qué elegí hacerme adicto a tus miradas, a tu sonrisa, a tu risa, a tu forma de hacer las cosas. Adicto a ti.",
             
             "Y como auto para mejor fallar, paso a recordarte lo mucho que me encantas. Lo mucho que me gustas y cuánto te quiero.",
+
+            "Dejo constancia expresa de que no me importa no haber sido tu primera instancia, siempre y cuando me permitas ser la última y definitiva.",
             
-            "Que tengas un viernes perfecto, mi Sky Blue 🩵. Confío en que el juez de tu corazón fallará a mi favor; caso contrario, apelaré hasta la última instancia porque este caso lo tengo ganado."
+            "Que tengas un viernes perfecto, mi Sky Blue 🩵. Confío en que el juez de tu corazón fallará a mi favor; caso contrario, apelaré hasta la última instancia porque este caso lo tengo ganado.",
+
+            "Para los efectos legales y sentimentales correspondientes, firmo la presente declaración."
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -307,6 +378,8 @@
             const introScreen = document.getElementById('intro-screen');
             const docContainer = document.getElementById('document');
             const textBody = document.getElementById('text-body');
+            const signature = document.getElementById('signature');
+            const verdictBtn = document.getElementById('verdict-btn');
             const stamp = document.getElementById('official-stamp');
             const bgMusic = document.getElementById('bg-music');
             
@@ -356,11 +429,33 @@
                     await new Promise(r => setTimeout(r, 600)); // Pausa entre párrafos
                 }
 
-                // Al terminar todo el texto, golpear con el sello!
+                // Al terminar todo el texto, mostrar la firma
                 setTimeout(() => {
-                    stamp.classList.add('show');
+                    signature.style.opacity = '1';
+                    
+                    // Después de la firma, mostrar el botón para ella
+                    setTimeout(() => {
+                        verdictBtn.classList.add('show');
+                        // Hacer scroll automático hacia el botón por si la pantalla es pequeña
+                        verdictBtn.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                    }, 1500);
+
                 }, 800);
             }
+
+            // Lógica cuando ella presiona el botón "Dictar Fallo a Favor"
+            verdictBtn.addEventListener('click', () => {
+                // Desaparecer el botón
+                verdictBtn.style.opacity = '0';
+                verdictBtn.style.transform = 'translateY(20px)';
+                verdictBtn.style.pointerEvents = 'none';
+
+                // Aparecer el Sello Rojo
+                setTimeout(() => {
+                    verdictBtn.style.display = 'none';
+                    stamp.classList.add('show');
+                }, 400);
+            });
 
             function typeWriterEffect(element, text, speed) {
                 return new Promise(resolve => {
