@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificación Judicial - Expediente 001</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Playfair para encabezados legales, Courier Prime para el texto de máquina de escribir -->
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --desk-bg: #2c1e16;
+            --paper-bg: #f9f6f0;
+            --ink-color: #1a1a1a;
+            --stamp-red: #c92a2a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            /* Fondo simulando textura de escritorio de madera oscura */
+            background: linear-gradient(rgba(44, 30, 22, 0.9), rgba(20, 12, 9, 0.9)), 
+                        repeating-linear-gradient(45deg, #3a281c 0px, #3a281c 10px, #2c1e16 10px, #2c1e16 20px);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier Prime', monospace;
+            color: var(--ink-color);
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        /* ----- PANTALLA INICIAL (Carpeta) ----- */
+        .intro-screen {
+            position: absolute;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 1s ease-in-out;
+        }
+
+        .folder-btn {
+            background-color: #d4a373;
+            border: 2px solid #a67c52;
+            padding: 30px 50px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #3e2723;
+            border-radius: 5px 25px 5px 5px;
+            cursor: pointer;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .folder-btn::before {
+            content: 'CONFIDENCIAL';
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: var(--stamp-red);
+            color: white;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.9rem;
+            padding: 2px 10px;
+            border-radius: 3px;
+            letter-spacing: 2px;
+        }
+
+        .folder-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7), inset 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* ----- EL DOCUMENTO (Cédula de Notificación) ----- */
+        .document-container {
+            background-color: var(--paper-bg);
+            width: 100%;
+            max-width: 800px;
+            min-height: 85vh;
+            padding: 50px 60px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            position: relative;
+            display: none; /* Oculto inicialmente */
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 1.5s ease;
+            
+            /* Borde doble estilo documento legal */
+            border: 1px solid #d1c7b7;
+            outline: 3px solid var(--ink-color);
+            outline-offset: -15px;
+        }
+
+        /* Escudo / Balanza */
+        .doc-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--ink-color);
+            padding-bottom: 20px;
+            margin-top: 10px;
+        }
+
+        .justice-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .doc-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .doc-subtitle {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+
+        /* Metadatos del documento */
+        .meta-data {
+            margin-bottom: 30px;
+            font-size: 1rem;
+            line-height: 1.6;
+            font-weight: 700;
+        }
+
+        .meta-row {
+            display: flex;
+            margin-bottom: 5px;
+        }
+
+        .meta-label {
+            width: 180px;
+            text-transform: uppercase;
+        }
+
+        /* Cuerpo del texto */
+        .doc-body {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            text-align: justify;
+            min-height: 300px; /* Espacio para que se escriba */
+        }
+
+        .typewriter-line {
+            margin-bottom: 20px;
+            text-indent: 40px;
+        }
+
+        /* El cursor de la máquina de escribir */
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1.2em;
+            background-color: var(--ink-color);
+            vertical-align: bottom;
+            animation: blink 0.8s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* ----- EL SELLO FINAL ----- */
+        .stamp {
+            position: absolute;
+            bottom: 60px;
+            right: 80px;
+            border: 6px solid var(--stamp-red);
+            color: var(--stamp-red);
+            font-family: 'Courier Prime', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            padding: 10px 20px;
+            border-radius: 10px;
+            transform: rotate(-15deg) scale(3);
+            opacity: 0;
+            pointer-events: none;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .stamp.show {
+            animation: stamp-smash 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        .stamp-date {
+            font-size: 1rem;
+            border-top: 2px dashed var(--stamp-red);
+            margin-top: 5px;
+            padding-top: 5px;
+        }
+
+        @keyframes stamp-smash {
+            0% { opacity: 0; transform: rotate(-25deg) scale(3); }
+            50% { opacity: 1; transform: rotate(-15deg) scale(0.9); }
+            70% { transform: rotate(-15deg) scale(1.05); }
+            100% { opacity: 0.9; transform: rotate(-15deg) scale(1); }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .document-container {
+                padding: 40px 25px;
+                outline-offset: -10px;
+            }
+            .doc-title { font-size: 1.4rem; }
+            .meta-label { width: 120px; font-size: 0.9rem;}
+            .meta-data { font-size: 0.9rem; }
+            .doc-body { font-size: 1.05rem; }
+            .typewriter-line { text-indent: 20px; }
+            .folder-btn { font-size: 1.3rem; padding: 25px 30px; }
+            .stamp {
+                right: 30px;
+                bottom: 40px;
+                font-size: 1.8rem;
+                padding: 5px 15px;
+                border-width: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Audio oculto (requiere archivo musica.mp3) -->
+    <audio id="bg-music" src="musica.mp3" preload="auto" loop></audio>
+
+    <!-- Pantalla Inicial -->
+    <div class="intro-screen" id="intro-screen">
+        <button class="folder-btn" id="open-btn">
+            Abrir Expediente<br>N° 11-09-C&C
+        </button>
+    </div>
+
+    <!-- Documento Legal -->
+    <div class="document-container" id="document">
+        
+        <div class="doc-header">
+            <div class="justice-icon">⚖️</div>
+            <div class="doc-title">Tribunal Supremo del Corazón</div>
+            <div class="doc-subtitle">JUZGADO DE PRIMERA INSTANCIA EN LO SENTIMENTAL</div>
+        </div>
+
+        <div class="meta-data">
+            <div class="meta-row">
+                <div class="meta-label">Expediente:</div>
+                <div>N° 11-09-C&C</div>
+            </div>
+            <div class="meta-row">
+                <div class="meta-label">Fecha de los hechos:</div>
+                <div>11 de Septiembre (Primer Beso)</div>
+            </div>
+            <div class="meta-row">
+                <div class="meta-label">Asunto:</div>
+                <div>Cédula de Notificación y Declaración Irrefutable</div>
+            </div>
+            <div class="meta-row">
+                <div class="meta-label">Dirigido a:</div>
+                <div>Celeste (alias: Sky Blue 🩵)</div>
+            </div>
+        </div>
+
+        <div class="doc-body" id="text-body">
+            <!-- El texto se inyectará aquí con JS -->
+        </div>
+
+        <!-- Sello que aparecerá al final -->
+        <div class="stamp" id="official-stamp">
+            CASO GANADO
+            <div class="stamp-date">A FAVOR DE CRISTIAN</div>
+        </div>
+
+    </div>
+
+        <script>
+        // Los párrafos de tu carta divididos para el efecto máquina de escribir
+        const paragraphs = [
+            "Saludos a su honorable presencia.",
+            
+            "Hago constar en actas que mi cariño por ti no tiene precedentes, y cada día a tu lado sienta una nueva jurisprudencia de felicidad. Eres el fallo favorable en mi vida, la sentencia perfecta que dicta amor y belleza en cada cláusula de tu ser.",
+            
+            "Solicito formalmente una audiencia en el tribunal de tu corazón; presentaré en cada etapa del proceso las evidencias irrefutables de por qué elegí hacerme adicto a tus miradas, a tu sonrisa, a tu risa, a tu forma de hacer las cosas. Adicto a ti.",
+            
+            "Y como auto para mejor fallar, paso a recordarte lo mucho que me encantas. Lo mucho que me gustas y cuánto te quiero.",
+            
+            "Que tengas un viernes perfecto, mi Sky Blue 🩵. Confío en que el juez de tu corazón fallará a mi favor; caso contrario, apelaré hasta la última instancia porque este caso lo tengo ganado."
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const openBtn = document.getElementById('open-btn');
+            const introScreen = document.getElementById('intro-screen');
+            const docContainer = document.getElementById('document');
+            const textBody = document.getElementById('text-body');
+            const stamp = document.getElementById('official-stamp');
+            const bgMusic = document.getElementById('bg-music');
+            
+            let isOpened = false;
+
+            openBtn.addEventListener('click', () => {
+                if (isOpened) return;
+                isOpened = true;
+
+                // Intentar reproducir música al abrir la carpeta
+                bgMusic.volume = 0.4;
+                const playPromise = bgMusic.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("Nota para el desarrollador: Sube musica.mp3 a GitHub para activar el audio.", error);
+                    });
+                }
+
+                // Animación de ocultar carpeta
+                introScreen.style.transform = 'translateY(-100vh)';
+                introScreen.style.opacity = '0';
+                
+                setTimeout(() => {
+                    introScreen.style.display = 'none';
+                    
+                    // Mostrar documento
+                    docContainer.style.display = 'block';
+                    setTimeout(() => {
+                        docContainer.style.opacity = '1';
+                        docContainer.style.transform = 'scale(1)';
+                        
+                        // Iniciar la redacción del acta
+                        setTimeout(startTyping, 1000);
+                    }, 50);
+                }, 800);
+            });
+
+            async function startTyping() {
+                const speed = 25; // Velocidad rápida (estilo máquina de escribir ágil)
+                
+                for (let i = 0; i < paragraphs.length; i++) {
+                    const p = document.createElement('div');
+                    p.classList.add('typewriter-line');
+                    textBody.appendChild(p);
+                    
+                    await typeWriterEffect(p, paragraphs[i], speed);
+                    await new Promise(r => setTimeout(r, 600)); // Pausa entre párrafos
+                }
+
+                // Al terminar todo el texto, golpear con el sello!
+                setTimeout(() => {
+                    stamp.classList.add('show');
+                }, 800);
+            }
+
+            function typeWriterEffect(element, text, speed) {
+                return new Promise(resolve => {
+                    let i = 0;
+                    const cursor = document.createElement('span');
+                    cursor.classList.add('cursor');
+                    element.appendChild(cursor);
+
+                    const interval = setInterval(() => {
+                        // Manejo especial para el emoji 🩵 para no cortarlo a la mitad
+                        // JavaScript a veces cuenta los emojis complejos como 2 caracteres.
+                        // Para este texto en específico, insertamos normalmente.
+                        
+                        const charNode = document.createTextNode(text.charAt(i));
+                        element.insertBefore(charNode, cursor);
+                        
+                        i++;
+                        
+                        // Si el texto completo se ha escrito
+                        if (i >= text.length) {
+                            clearInterval(interval);
+                            cursor.remove(); // Quitar cursor al finalizar la línea
+                            resolve();
+                        }
+                    }, speed);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
