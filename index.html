@@ -166,7 +166,9 @@
         .signature-block {
             display: flex;
             flex-direction: column;
-            align-items: flex-end; /* Alinea todo perfectamente a la derecha */
+            align-items: center; /* Centra la imagen y la línea perfectamente entre sí */
+            margin-left: auto;   /* Empuja todo el bloque a la derecha de la carta */
+            width: max-content;  /* Ajusta el bloque al tamaño exacto de sus elementos */
             margin-top: 40px;
             margin-right: 20px;
             opacity: 0;
@@ -182,23 +184,27 @@
 
         /* --- NUEVO: Estilo para tu firma en imagen --- */
         .signature-img {
-            width: 280px; /* Tamaño fijo para que se vea igual de bien en todas partes */
+            width: 260px; /* Tamaño unificado con la línea */
             max-width: 100%;
             height: auto;
-            mix-blend-mode: multiply; /* Hace transparente el fondo blanco */
-            /* EFECTO ESCÁNER: Elimina el fondo gris y resalta la tinta negra */
-            filter: grayscale(100%) contrast(300%) brightness(130%); 
-            margin-bottom: 5px;
+            mix-blend-mode: multiply; 
+            /* Como ya limpiaste el fondo tú mismo, bajamos el contraste un poco para que no se sature */
+            filter: grayscale(100%) contrast(150%) brightness(105%); 
+            margin-bottom: -15px; /* EFECTO REALISTA: Acerca la firma cruzando la línea */
+            position: relative;
+            z-index: 2; /* Asegura que la tinta pase por encima de la línea negra */
         }
 
         .signature-line {
             display: block;
-            border-top: 1px solid var(--ink-color);
+            border-top: 1.5px solid var(--ink-color); /* Línea un poco más definida */
             padding-top: 5px;
             font-size: 0.9rem;
             font-weight: 700;
             text-align: center;
-            min-width: 250px; /* Asegura que la línea de la firma sea del tamaño correcto */
+            min-width: 260px; /* Mismo ancho que la imagen para simetría perfecta */
+            position: relative;
+            z-index: 1;
         }
 
         /* --- NUEVO: ESTILOS PARA EL BOTÓN DEL JUEZ --- */
@@ -305,8 +311,8 @@
                 border-width: 4px;
             }
             .signature-name { font-size: 2.2rem; }
-            .signature-img { width: 220px; } /* Ajuste perfecto para celular */
-            .signature-line { min-width: 200px; }
+            .signature-img { width: 220px; margin-bottom: -10px; } /* Ajuste perfecto para celular */
+            .signature-line { min-width: 220px; }
             .verdict-btn { font-size: 1.1rem; padding: 12px 25px; }
         }
     </style>
