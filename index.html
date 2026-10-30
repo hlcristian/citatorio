@@ -178,6 +178,15 @@
             margin-bottom: -10px; /* Acercar la línea */
         }
 
+        /* --- NUEVO: Estilo para tu firma en imagen --- */
+        .signature-img {
+            max-width: 250px;
+            height: auto;
+            margin-bottom: -10px;
+            mix-blend-mode: multiply; /* Magia: hace transparente el fondo blanco/gris de tu foto */
+            filter: contrast(1.5); /* Oscurece un poco la tinta para que se vea más real */
+        }
+
         .signature-line {
             display: inline-block;
             border-top: 1px solid var(--ink-color);
@@ -340,8 +349,8 @@
 
         <!-- Firma que aparecerá después del texto -->
         <div class="signature-block" id="signature">
-            <div class="signature-name">Cristian Herrera</div>
-            <div class="signature-line">Firma del Demandante</div>
+            <img src="firma.jpeg" alt="Firma de Cristian" class="signature-img">
+            <div class="signature-line">Parte Defensora<br>Ing. Cristian Herrera</div>
         </div>
 
         <!-- Botón para que ELLA dicte el fallo -->
