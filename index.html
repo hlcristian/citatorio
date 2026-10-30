@@ -164,7 +164,9 @@
 
         /* --- NUEVO: ESTILOS PARA LA FIRMA --- */
         .signature-block {
-            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end; /* Alinea todo perfectamente a la derecha */
             margin-top: 40px;
             margin-right: 20px;
             opacity: 0;
@@ -180,19 +182,23 @@
 
         /* --- NUEVO: Estilo para tu firma en imagen --- */
         .signature-img {
-            max-width: 250px;
+            width: 280px; /* Tamaño fijo para que se vea igual de bien en todas partes */
+            max-width: 100%;
             height: auto;
-            margin-bottom: -10px;
-            mix-blend-mode: multiply; /* Magia: hace transparente el fondo blanco/gris de tu foto */
-            filter: contrast(1.5); /* Oscurece un poco la tinta para que se vea más real */
+            mix-blend-mode: multiply; /* Hace transparente el fondo blanco */
+            /* EFECTO ESCÁNER: Elimina el fondo gris y resalta la tinta negra */
+            filter: grayscale(100%) contrast(300%) brightness(130%); 
+            margin-bottom: 5px;
         }
 
         .signature-line {
-            display: inline-block;
+            display: block;
             border-top: 1px solid var(--ink-color);
             padding-top: 5px;
             font-size: 0.9rem;
             font-weight: 700;
+            text-align: center;
+            min-width: 250px; /* Asegura que la línea de la firma sea del tamaño correcto */
         }
 
         /* --- NUEVO: ESTILOS PARA EL BOTÓN DEL JUEZ --- */
@@ -299,6 +305,8 @@
                 border-width: 4px;
             }
             .signature-name { font-size: 2.2rem; }
+            .signature-img { width: 220px; } /* Ajuste perfecto para celular */
+            .signature-line { min-width: 200px; }
             .verdict-btn { font-size: 1.1rem; padding: 12px 25px; }
         }
     </style>
